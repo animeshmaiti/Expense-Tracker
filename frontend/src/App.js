@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import bg from './img/bg.png';
 import { MainLayout } from './styles/Layouts';
 import { Orb } from './components/Orb';
+import { Navigation } from './components/Navigation';
+import { useMemo, useState } from 'react';
 
 const AppStyled = styled.div`
     background-image: url(${bg});
@@ -11,11 +13,13 @@ const AppStyled = styled.div`
 `;
 
 function App() {
+  const [active, setActive] = useState(1);
+  const orbMemo = useMemo(() => <Orb/>, []);
   return (
     <AppStyled className="App">
-      <Orb/>
+      {orbMemo}
       <MainLayout>
-
+        <Navigation active={active} setActive={setActive}/>
       </MainLayout>
     </AppStyled>
   );
