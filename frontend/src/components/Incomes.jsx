@@ -14,7 +14,9 @@ export const Incomes = () => {
             <div className="form-container">
               <Form/>
             </div>
-            <div className="incomes"></div>
+            <div className="incomes">
+              
+            </div>
           </div>
         </InnerLayout>
     </IncomeStyled>
