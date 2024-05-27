@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { InnerLayout } from '../styles/Layouts';
 import { ExpenseForm } from './ExpenseForm';
 import { useGlobalContext } from '../context/globalContext';
-import { ExpenseItem } from './ExpenseItem';
+import { IncomeItem } from './IncomeItem';
 
 export const Expenses = () => {
 
@@ -23,10 +23,10 @@ export const Expenses = () => {
           </div>
           <div className="expenses">
             {expenses.map((expense) => {
-              const { _id, title, amount, date, category, description } =
+              const { _id, title, amount, type, date, category, description } =
                 expense;
               return (
-                <ExpenseItem
+                <IncomeItem
                   key={_id}
                   id={_id}
                   title={title}
@@ -35,6 +35,7 @@ export const Expenses = () => {
                   date={date}
                   category={category}
                   deleteItem={deleteExpense}
+                  type={type}
                 />
               );
             })}

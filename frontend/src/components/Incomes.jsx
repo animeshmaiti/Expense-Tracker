@@ -23,7 +23,7 @@ export const Incomes = () => {
           </div>
           <div className="incomes">
             {incomes.map((income) => {
-              const { _id, title, amount, date, category, description } =
+              const { _id, title, amount,type, date, category, description } =
                 income;
               return (
                 <IncomeItem
@@ -35,6 +35,7 @@ export const Incomes = () => {
                   date={date}
                   category={category}
                   deleteItem={deleteIncome}
+                  type={type}
                 />
               );
             })}

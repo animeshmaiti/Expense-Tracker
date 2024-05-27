@@ -1,9 +1,26 @@
 import React from "react";
 import styled from "styled-components";
 import {
-  bitcoin, book, calender, card, circle, clothing,
-  comment, dollar, food, freelance, medical, money,
-  piggy, stocks, takeaway, trash, tv, users, yt,
+  bitcoin,
+  book,
+  calender,
+  card,
+  circle,
+  clothing,
+  comment,
+  dollar,
+  food,
+  freelance,
+  game,
+  medical,
+  money,
+  piggy,
+  stocks,
+  takeaway,
+  trash,
+  tv,
+  users,
+  yt,
 } from "../utils/icons";
 import Button from "./Button";
 
@@ -43,26 +60,28 @@ export const IncomeItem = ({
 
   const expenseCatIcon = () => {
     switch (category) {
-        case 'education':
-            return book;
-        case 'groceries':
-            return food;
-        case 'health':
-            return medical;
-        case 'subscriptions':
-            return tv;
-        case 'takeaways':
-            return takeaway;
-        case 'clothing':
-            return clothing;
-        case 'traveling':
-            return freelance;
-        case 'other':
-            return circle;
-        default:
-            return ''
+      case "education":
+        return book;
+      case "groceries":
+        return food;
+      case "games":
+        return game;
+      case "health":
+        return medical;
+      case "subscriptions":
+        return tv;
+      case "takeaways":
+        return takeaway;
+      case "clothing":
+        return clothing;
+      case "traveling":
+        return freelance;
+      case "other":
+        return circle;
+      default:
+        return "";
     }
-}
+  };
 
   return (
     <IncomeItemStyled>
