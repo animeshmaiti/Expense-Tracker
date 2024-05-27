@@ -12,7 +12,7 @@ exports.addIncome = async (req, res) => {
             category,
             description
         });
-        if (!title || !date || !category || !description) {
+        if (!title || !date || !category) {
             return res.status(400).json({ msg: "All fields are required" });
         }
         if (amount <= 0 || !amount === Number) {

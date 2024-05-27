@@ -31,7 +31,6 @@ const ExpenseSchema = new mongoose.Schema({
     description: {
         type: String,
         maxlength: 100,
-        required: true,
         trim: true
     },
 }, { timestamps: true });
