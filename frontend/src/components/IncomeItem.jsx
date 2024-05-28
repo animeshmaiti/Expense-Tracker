@@ -23,6 +23,7 @@ import {
   yt,
 } from "../utils/icons";
 import Button from "./Button";
+import { dateFormat } from "../utils/dateFormat";
 
 export const IncomeItem = ({
   id,
@@ -96,11 +97,7 @@ export const IncomeItem = ({
               {dollar} {amount}
             </p>
             <p>
-              {calender} {date}
-            </p>
-            <p>
-              {comment}
-              {description}
+              {calender} {dateFormat(date)}
             </p>
           </div>
           <div className="btn-con">
@@ -114,6 +111,11 @@ export const IncomeItem = ({
             />
           </div>
         </div>
+        {description && (
+          <p>
+            {comment} {description}
+          </p>
+        )}
       </div>
     </IncomeItemStyled>
   );

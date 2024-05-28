@@ -7,7 +7,7 @@ import Button from "./Button";
 import { plus } from "../utils/icons";
 
 export const Form = () => {
-  const { addIncome } = useGlobalContext();
+  const { addIncome,error } = useGlobalContext();
 
   const [input, setInput] = useState({
     title: "",
@@ -36,6 +36,7 @@ export const Form = () => {
 
   return (
     <FormStyled onSubmit={handleSubmit}>
+      {error && <p className="error">{error}</p>}
       <div className="input-control">
         <input
           required

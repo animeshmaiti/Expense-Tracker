@@ -22,10 +22,8 @@ function App() {
       case 1:
         return <Dashboard/>;
       case 2:
-        return <Dashboard />;
-      case 3:
         return <Incomes />;
-      case 4:
+      case 3:
         return <Expenses />;
       default:
         return <Dashboard />;

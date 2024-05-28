@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { plus } from "../utils/icons";
 
 export const ExpenseForm = () => {
-  const { addExpense } = useGlobalContext();
+  const { addExpense, error } = useGlobalContext();
 
   const [input, setInput] = useState({
     title: "",
@@ -18,7 +18,7 @@ export const ExpenseForm = () => {
   });
 
   const { title, amount, category, description, date } = input;
-  
+
   const handleChange = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -37,6 +37,7 @@ export const ExpenseForm = () => {
 
   return (
     <ExpenseFormStyled onSubmit={handleSubmit}>
+      {error && <p className="error">{error}</p>}
       <div className="input-control">
         <input
           required
