@@ -13,6 +13,7 @@ app.use(cors());
 
 // Routes
 readdirSync('./routes').map((r)=> app.use('/api', require(`./routes/${r}`)));
+app.use('/api/auth',require('./routes/auth'));
 
 const server =()=>{
     db();

@@ -8,14 +8,16 @@ import { useMemo, useState } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Incomes } from './components/Incomes';
 import { Expenses } from './components/Expenses';
-import { useGlobalContext } from './context/globalContext';
+import LoginForm from './components/LoginForm';
+import Alert from './components/Alert';
+// import { useGlobalContext } from './context/globalContext';
 
 function App() {
   const [active, setActive] = useState(1);
   const orbMemo = useMemo(() => <Orb />, []);
 
-  const global = useGlobalContext();
-  console.log(global);
+  // const global = useGlobalContext();
+  // console.log(global);
 
   const displayData = () => {
     switch (active) {
@@ -29,14 +31,24 @@ function App() {
         return <Dashboard />;
     }
   }
-
+  const [alert, setAlert] = useState(null);
+  const showAlert = (type, massage) => {
+    setAlert({
+      msg: massage,
+      type: type,
+    });
+    setTimeout(() => {
+      setAlert(null);
+    }, 1000);
+  };
   return (
     <AppStyled className="App">
       {orbMemo}
       <MainLayout>
         <Navigation active={active} setActive={setActive} />
         <main>
-          {displayData()}
+          <Alert alert={alert}/>
+          {localStorage.getItem('token')?displayData():<LoginForm alert={showAlert}/>}
         </main>
       </MainLayout>
     </AppStyled>
