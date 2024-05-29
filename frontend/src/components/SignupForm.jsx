@@ -1,43 +1,18 @@
-import axios from "axios";
-import React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../context/globalContext";
 
 export const SignupForm = (props) => {
-  const signupUrl = "http://localhost:5000/api/auth/createuser";
+  const {signup}=useGlobalContext();
   const [credential, setCredential] = useState({
     username: "",
     email: "",
     password: "",
     cPassword: "",
   });
-  const alert = props.alert;
-  const navigate = useNavigate();
+  // const alert = props.alert;
   const handleCreateUser = async (e) => {
     e.preventDefault();
-
-    const response = await axios.post(
-      signupUrl,
-      {
-        username: credential.username,
-        email: credential.email,
-        password: credential.password,
-        cPassword: credential.cPassword,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const result = await response.json();
-    if (result.success) {
-      localStorage.setItem("token", result.authToken);
-      navigate("/login");
-      alert("success", "Successfully created");
-    }
-    console.log(result);
+    signup(credential);
   };
   const onChange = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });

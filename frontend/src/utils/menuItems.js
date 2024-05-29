@@ -5,18 +5,18 @@ export const menuItems = [
         id: 1,
         title: 'Dashboard',
         icon: dashboard,
-        link: '/dashboard'
+        link: '/'
     },
     {
         id: 2,
         title: "Incomes",
         icon: trend,
-        link: "/dashboard",
+        link: "/incomes",
     },
     {
         id: 3,
         title: "Expenses",
         icon: expenses,
-        link: "/dashboard",
+        link: "/expenses",
     },
 ]

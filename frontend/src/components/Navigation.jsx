@@ -1,10 +1,13 @@
-import React from "react";
 import styled from "styled-components";
 import avatar from "../img/avatar.png";
 import { menuItems } from "../utils/menuItems";
 import { signout } from "../utils/icons";
+import { useGlobalContext } from "../context/globalContext";
+import { useNavigate } from "react-router-dom";
 
 export const Navigation = ({ active, setActive }) => {
+  const {logout}=useGlobalContext();
+  const navigate = useNavigate();
   return (
     <NavStyled>
       <div className="user-con">
@@ -18,7 +21,10 @@ export const Navigation = ({ active, setActive }) => {
             return (
               <li
                 key={item.id}
-                onClick={() => setActive(item.id)}
+                onClick={() => {
+                  setActive(item.id);
+                  navigate(item.link);
+                }}
                 className={active === item.id ? "active" : ""}
               >
                 {item.icon}
@@ -29,7 +35,7 @@ export const Navigation = ({ active, setActive }) => {
         </ul>
       </div>
       <div className="bottom-nav">
-        <li>{signout} Sign Out</li>
+        <li onClick={logout}>{signout} Sign Out</li>
       </div>
     </NavStyled>
   );

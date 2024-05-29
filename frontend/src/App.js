@@ -10,28 +10,17 @@ import { Incomes } from './components/Incomes';
 import { Expenses } from './components/Expenses';
 import LoginForm from './components/LoginForm';
 import Alert from './components/Alert';
-// import { useGlobalContext } from './context/globalContext';
+import { Routes, Route } from "react-router-dom";
+import { SignupForm } from './components/SignupForm';
+import { useGlobalContext } from './context/globalContext';
 
 function App() {
   const [active, setActive] = useState(1);
+  const {token}=useGlobalContext();
+  console.log(token);
   const orbMemo = useMemo(() => <Orb />, []);
-
-  // const global = useGlobalContext();
-  // console.log(global);
-
-  const displayData = () => {
-    switch (active) {
-      case 1:
-        return <Dashboard/>;
-      case 2:
-        return <Incomes />;
-      case 3:
-        return <Expenses />;
-      default:
-        return <Dashboard />;
-    }
-  }
   const [alert, setAlert] = useState(null);
+
   const showAlert = (type, massage) => {
     setAlert({
       msg: massage,
@@ -41,20 +30,27 @@ function App() {
       setAlert(null);
     }, 1000);
   };
+
   return (
-    <AppStyled className="App">
+    <AppStyled>
       {orbMemo}
       <MainLayout>
         <Navigation active={active} setActive={setActive} />
         <main>
-          <Alert alert={alert}/>
-          {localStorage.getItem('token')?displayData():<LoginForm alert={showAlert}/>}
+            <Routes>
+              <Route exact path="/" element={token ? <Dashboard />:<LoginForm alert={showAlert}/>} />
+              <Route exact path="/incomes" element={token?<Incomes />:<LoginForm alert={showAlert}/>} />
+              <Route exact path="/expenses" element={token ?<Expenses />:<LoginForm alert={showAlert}/>} />
+              <Route exact path="/login" element={<LoginForm alert={showAlert} />} />
+              <Route exact path="/register" element={<SignupForm alert={showAlert} />} />
+              <Route path="*" element={<h1>Not Found</h1>} />
+            </Routes>
+          {alert && <Alert type={alert.type} message={alert.msg} />}
         </main>
       </MainLayout>
     </AppStyled>
   );
 }
-
 const AppStyled = styled.div`
     background-image: url(${bg});
     position: relative;

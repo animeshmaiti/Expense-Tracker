@@ -1,17 +1,88 @@
-import { createContext, useState, useContext, useCallback } from "react";
+import { createContext, useState, useContext, useCallback,useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const BaseUrl = 'http://localhost:5000/api/';
-
 const GlobalContext = createContext();
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY1NWU3Y2Y1ODkwNWUwYWQ3OTA0YWFiIn0sImlhdCI6MTcxNjkwNjc4OH0.ODmib0NX2IDEsRqrTIly65nirvLH4SNDmnx56TbZqE0
-const token = localStorage.getItem('token');
+
+// const token ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY1NWVhNWE2ZDBlMDBkZTBjMmE2OGFjIn0sImlhdCI6MTcxNjk5NjEwNn0.s5s3gEevSH-Q5blf-aKIHxzqsgFhsd5_nPsI4X8Cots';
 
 export const GlobalProvider = ({ children }) => {
-
+    // const { token } = useAuth();
+    const navigate = useNavigate();
+    const [token, setToken] = useState(localStorage.getItem('token'));
+    console.log(token);
     const [incomes, setIncomes] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [error, setError] = useState(null);
+
+    // useEffect(() => {
+    //     const storedToken = localStorage.getItem('token');
+    //     if (storedToken) {
+    //       setToken(storedToken);
+    //     }
+    //   }, []);
+
+    // login
+    const login = async (credential) => {
+        const authURL = "http://localhost:5000/api/auth/login";
+        const response = await axios.post(
+            authURL,
+            {
+                email: credential.email,
+                password: credential.password,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        const result = await response.data;
+        if (result.success) {
+            localStorage.setItem("token", result.authToken);
+            setToken(result.authToken);
+            navigate('/');
+            // console.log(result.authToken);
+            // alert("success", "Successfully log in");
+        } else {
+            alert("danger", "invalid credentials");
+        }
+    };
+
+    //logout
+    const logout = () => {
+        localStorage.removeItem("token");
+        setToken(null);
+        navigate("/login");
+    };
+
+    //sign up
+    const signup = async (credential) => {
+        const signupUrl = "http://localhost:5000/api/auth/createuser";
+        const response = await axios.post(
+            signupUrl,
+            {
+                username: credential.username,
+                email: credential.email,
+                password: credential.password,
+                cPassword: credential.cPassword,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        const result = await response.json();
+        if (result.success) {
+            localStorage.setItem("token", result.authToken);
+            navigate("/login");
+            // alert("success", "Successfully created");
+        }
+    };
 
     // Incomes 
     const getIncomes = useCallback(async () => {
@@ -29,6 +100,7 @@ export const GlobalProvider = ({ children }) => {
     }, []);
 
     const addIncome = useCallback(async (income) => {
+        console.log(token);
         try {
             await axios.post(`${BaseUrl}add-income`, income, {
                 headers: {
@@ -44,7 +116,7 @@ export const GlobalProvider = ({ children }) => {
 
     const deleteIncome = useCallback(async (id) => {
         try {
-            await axios.delete(`${BaseUrl}delete-income/${id}`,{
+            await axios.delete(`${BaseUrl}delete-income/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "auth-token": token,
@@ -67,7 +139,7 @@ export const GlobalProvider = ({ children }) => {
     // Expense
     const getExpenses = useCallback(async () => {
         try {
-            const response = await axios.get(`${BaseUrl}get-expenses`,{
+            const response = await axios.get(`${BaseUrl}get-expenses`, {
                 headers: {
                     "Content-Type": "application/json",
                     "auth-token": token,
@@ -81,7 +153,7 @@ export const GlobalProvider = ({ children }) => {
 
     const addExpense = useCallback(async (expense) => {
         try {
-            await axios.post(`${BaseUrl}add-expense`, expense,{
+            await axios.post(`${BaseUrl}add-expense`, expense, {
                 headers: {
                     "Content-Type": "application/json",
                     "auth-token": token,
@@ -95,7 +167,7 @@ export const GlobalProvider = ({ children }) => {
 
     const deleteExpense = useCallback(async (id) => {
         try {
-            await axios.delete(`${BaseUrl}delete-expense/${id}`,{
+            await axios.delete(`${BaseUrl}delete-expense/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "auth-token": token,
@@ -125,6 +197,10 @@ export const GlobalProvider = ({ children }) => {
 
     return (
         <GlobalContext.Provider value={{
+            login,
+            signup,
+            token,
+            logout,
             addIncome,
             getIncomes,
             incomes,

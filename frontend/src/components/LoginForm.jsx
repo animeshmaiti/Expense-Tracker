@@ -1,34 +1,14 @@
 import { useState } from "react";
-import axios from "axios";
+import { useGlobalContext } from "../context/globalContext";
 
-function LoginForm(props) {
-  const authURL = "http://localhost:5000/api/auth/login";
-  const alert = props.alert;
+
+function LoginForm() {
+  const {login}= useGlobalContext();
+  // const alert = props.alert;
   const [credential, setCredential] = useState({ email: "", password: "" });
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    const response = await axios.post(
-      authURL,
-      {
-        email: credential.email,
-        password: credential.password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const result = await response.data;
-    if (result.success) {
-      localStorage.setItem("token", result.authToken);
-      alert("success", "Successfully log in");
-    } else {
-      alert("danger", "invalid credentials");
-    }
-    // console.log(result.authToken);
+    login(credential);
   };
   const onChange = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
