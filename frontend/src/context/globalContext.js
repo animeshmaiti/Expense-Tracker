@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 const BaseUrl = 'http://localhost:5000/api/';
 const GlobalContext = createContext();
 
-// const token ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY1NWVhNWE2ZDBlMDBkZTBjMmE2OGFjIn0sImlhdCI6MTcxNjk5NjEwNn0.s5s3gEevSH-Q5blf-aKIHxzqsgFhsd5_nPsI4X8Cots';
-
 export const GlobalProvider = ({ children }) => {
     // const { token } = useAuth();
     const navigate = useNavigate();
@@ -17,12 +15,12 @@ export const GlobalProvider = ({ children }) => {
     const [expenses, setExpenses] = useState([]);
     const [error, setError] = useState(null);
 
-    // useEffect(() => {
-    //     const storedToken = localStorage.getItem('token');
-    //     if (storedToken) {
-    //       setToken(storedToken);
-    //     }
-    //   }, []);
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+          setToken(storedToken);
+        }
+      }, []);
 
     // login
     const login = async (credential) => {
