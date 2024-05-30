@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useGlobalContext } from "../context/globalContext";
+import '../App.css';
+import finance from "../img/finance2.jpg";
+import { Link } from "react-router-dom";
 
 export const SignupForm = (props) => {
   const {signup}=useGlobalContext();
@@ -18,71 +21,74 @@ export const SignupForm = (props) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
   };
   return (
-    <div className="container vh-100">
-      <h2>Sign up to Notebook</h2>
-      <form onSubmit={handleCreateUser}>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="username"
-            name="username"
-            onChange={onChange}
-            required
-            minLength="3"
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email address
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            name="email"
-            aria-describedby="emailHelp"
-            onChange={onChange}
-            required
-          />
-          <div id="emailHelp" className="form-text">
-            We'll never share your email with anyone else.
+    <div className="login-page">
+      <div className="img-div">
+        <img src={finance} alt="finance" />
+      </div>
+      <form onSubmit={handleCreateUser} className="form-div">
+        <div className="container">
+          <h2>Create New Account</h2>
+          <div className="input-div">
+            <label className="input-label" htmlFor="username">
+              Username
+            </label>
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Enter Name"
+              name="username"
+              onChange={onChange}
+              required
+            />
           </div>
+          <div className="input-div">
+            <label className="input-label" htmlFor="email">
+              Email
+            </label>
+            <input
+              className="input-field"
+              type="email"
+              placeholder="Enter Email"
+              name="email"
+              onChange={onChange}
+              required
+            />
+          </div>
+          <div className="input-div">
+            <label className="input-label" htmlFor="password">
+              New Password
+            </label>
+            <input
+              className="input-field"
+              type="password"
+              placeholder="Enter Password"
+              name="password"
+              minLength="5"
+              onChange={onChange}
+              required
+            />
+          </div>
+          <div className="input-div">
+            <label className="input-label" htmlFor="psw">
+              Confirm Password
+            </label>
+            <input
+              className="input-field"
+              type="password"
+              placeholder="Confirm Password"
+              name="cPassword"
+              minLength="5"
+              onChange={onChange}
+              required
+            />
+          </div>
+          <button className="btn-login" type="submit">
+            Login
+          </button>
+          <p>
+            Existing User?<Link className="sign-up" to="/login">Sign in</Link>
+          </p>
         </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            name="password"
-            onChange={onChange}
-            required
-            minLength="5"
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="cPassword"
-            name="cPassword"
-            onChange={onChange}
-            required
-            minLength="5"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Create New Account
-        </button>
       </form>
     </div>
   );

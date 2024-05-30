@@ -9,7 +9,6 @@ import { History } from "./History";
 export const Dashboard = () => {
 
   const {totalIncome,totalExpense,getExpenses,getIncomes,incomes,expenses} = useGlobalContext();
-
   useEffect(() => {
     getExpenses();
     getIncomes();

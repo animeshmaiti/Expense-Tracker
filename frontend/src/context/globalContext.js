@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 
 const BaseUrl = 'http://localhost:5000/api/';
+const BaseAuthUrl = 'http://localhost:5000/api/auth/';
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     // const { token } = useAuth();
     const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem('token'));
-    console.log(token);
     const [incomes, setIncomes] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [error, setError] = useState(null);
@@ -24,7 +24,7 @@ export const GlobalProvider = ({ children }) => {
 
     // login
     const login = async (credential) => {
-        const authURL = "http://localhost:5000/api/auth/login";
+        const authURL = `${BaseAuthUrl}login`;
         const response = await axios.post(
             authURL,
             {
@@ -42,12 +42,23 @@ export const GlobalProvider = ({ children }) => {
         if (result.success) {
             localStorage.setItem("token", result.authToken);
             setToken(result.authToken);
-            navigate('/');
-            // console.log(result.authToken);
-            // alert("success", "Successfully log in");
+            window.location.href = "/";
         } else {
-            alert("danger", "invalid credentials");
+            console.log(result.message);
         }
+    };
+
+    //get user data
+    const getUser = async () => {
+        const userUrl = `${BaseAuthUrl}getuser`;
+        const response = await axios.get(userUrl, {
+            headers: {
+                "Content-Type": "application/json",
+                "auth-token": token,
+            },
+        });
+        const result = await response.data;
+        return result;
     };
 
     //logout
@@ -59,7 +70,7 @@ export const GlobalProvider = ({ children }) => {
 
     //sign up
     const signup = async (credential) => {
-        const signupUrl = "http://localhost:5000/api/auth/createuser";
+        const signupUrl = `${BaseAuthUrl}createuser`;
         const response = await axios.post(
             signupUrl,
             {
@@ -78,7 +89,6 @@ export const GlobalProvider = ({ children }) => {
         if (result.success) {
             localStorage.setItem("token", result.authToken);
             navigate("/login");
-            // alert("success", "Successfully created");
         }
     };
 
@@ -98,7 +108,6 @@ export const GlobalProvider = ({ children }) => {
     }, []);
 
     const addIncome = useCallback(async (income) => {
-        console.log(token);
         try {
             await axios.post(`${BaseUrl}add-income`, income, {
                 headers: {
@@ -199,6 +208,7 @@ export const GlobalProvider = ({ children }) => {
             signup,
             token,
             logout,
+            getUser,
             addIncome,
             getIncomes,
             incomes,

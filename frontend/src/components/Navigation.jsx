@@ -4,16 +4,24 @@ import { menuItems } from "../utils/menuItems";
 import { signout } from "../utils/icons";
 import { useGlobalContext } from "../context/globalContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export const Navigation = ({ active, setActive }) => {
-  const {logout}=useGlobalContext();
+  const {logout,getUser}=useGlobalContext();
+  const {user,setUser}=useState();
+  getUser().then(data => {
+    console.log(data.username);
+    setUser(data.username);
+  }).catch(error => {
+    console.error('Error:', error);
+  });
   const navigate = useNavigate();
   return (
     <NavStyled>
       <div className="user-con">
-        <img src={avatar} alt="" />
+        <img src={avatar} alt="avatar" />
         <div>
-          <h2>Animesh Maiti</h2>
+          <h2>{user}</h2>
           <p>Your Money</p>
         </div>
         <ul className="menu-items">
@@ -35,7 +43,7 @@ export const Navigation = ({ active, setActive }) => {
         </ul>
       </div>
       <div className="bottom-nav">
-        <li onClick={logout}>{signout} Sign Out</li>
+        <li style={{ cursor: 'pointer'}} onClick={logout}>{signout} Sign Out</li>
       </div>
     </NavStyled>
   );

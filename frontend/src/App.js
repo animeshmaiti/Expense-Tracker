@@ -9,43 +9,33 @@ import { Dashboard } from './components/Dashboard';
 import { Incomes } from './components/Incomes';
 import { Expenses } from './components/Expenses';
 import LoginForm from './components/LoginForm';
-import Alert from './components/Alert';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route ,useLocation} from "react-router-dom";
 import { SignupForm } from './components/SignupForm';
 import { useGlobalContext } from './context/globalContext';
 
 function App() {
   const [active, setActive] = useState(1);
   const {token}=useGlobalContext();
-  console.log(token);
   const orbMemo = useMemo(() => <Orb />, []);
-  const [alert, setAlert] = useState(null);
 
-  const showAlert = (type, massage) => {
-    setAlert({
-      msg: massage,
-      type: type,
-    });
-    setTimeout(() => {
-      setAlert(null);
-    }, 1000);
-  };
+  const location = useLocation();
+  const hideNavigationRoutes = ['/login', '/register'];
+  const shouldHideNavigation = hideNavigationRoutes.includes(location.pathname);
 
   return (
     <AppStyled>
       {orbMemo}
       <MainLayout>
-        <Navigation active={active} setActive={setActive} />
+      {!shouldHideNavigation && <Navigation active={active} setActive={setActive} />}
         <main>
             <Routes>
-              <Route exact path="/" element={token ? <Dashboard />:<LoginForm alert={showAlert}/>} />
-              <Route exact path="/incomes" element={token?<Incomes />:<LoginForm alert={showAlert}/>} />
-              <Route exact path="/expenses" element={token ?<Expenses />:<LoginForm alert={showAlert}/>} />
-              <Route exact path="/login" element={<LoginForm alert={showAlert} />} />
-              <Route exact path="/register" element={<SignupForm alert={showAlert} />} />
+              <Route exact path="/" element={token ? <Dashboard />:<LoginForm />} />
+              <Route exact path="/incomes" element={token?<Incomes />:<LoginForm />} />
+              <Route exact path="/expenses" element={token ?<Expenses />:<LoginForm />} />
+              <Route exact path="/login" element={<LoginForm />} />
+              <Route exact path="/register" element={<SignupForm  />} />
               <Route path="*" element={<h1>Not Found</h1>} />
             </Routes>
-          {alert && <Alert type={alert.type} message={alert.msg} />}
         </main>
       </MainLayout>
     </AppStyled>

@@ -11,7 +11,6 @@ export const Expenses = () => {
   useEffect(() => {
     getExpenses();
   }, [getExpenses]);
-
   return (
     <ExpenseStyled>
         <InnerLayout>
