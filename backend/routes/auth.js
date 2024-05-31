@@ -11,10 +11,10 @@ const JWT_SECRET = process.env.SECRET_KEY;
 
 //=============== Create user /api/auth/createuser (Login not required) ==============
 router.post('/createuser', [
-    body('username', 'enter a valid username').isLength({ min: 3 }),
+    body('username', 'enter a valid username min length 3').isLength({ min: 3 }),
     body('email', 'enter a valid email').isEmail(),
-    body('password', 'enter a valid password').isLength({ min: 5 }),
-    body('cPassword', 'enter a valid password').isLength({ min: 5 })
+    body('password', 'enter a valid password min length 5').isLength({ min: 5 }),
+    body('cPassword', 'enter a valid password min length 5').isLength({ min: 5 })
 ], async (req, res) => {
     let success = false;
     const errors = validationResult(req);
@@ -85,7 +85,7 @@ router.post('/login', [
         success=true
         res.json({success,authToken });
     } catch (error) {
-        console.error(error.message);
+        console.log(error.message);
         res.status(500).send("internal server error");
     }
 });

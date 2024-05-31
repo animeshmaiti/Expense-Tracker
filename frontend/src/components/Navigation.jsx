@@ -4,25 +4,18 @@ import { menuItems } from "../utils/menuItems";
 import { signout } from "../utils/icons";
 import { useGlobalContext } from "../context/globalContext";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 export const Navigation = ({ active, setActive }) => {
-  const {logout,getUser}=useGlobalContext();
-  const {user,setUser}=useState();
-  getUser().then(data => {
-    console.log(data.username);
-    setUser(data.username);
-  }).catch(error => {
-    console.error('Error:', error);
-  });
+  const {logout,getUser,user}=useGlobalContext();
+  getUser();
   const navigate = useNavigate();
   return (
     <NavStyled>
       <div className="user-con">
         <img src={avatar} alt="avatar" />
         <div>
-          <h2>{user}</h2>
-          <p>Your Money</p>
+          <h2>{user.username}</h2>
+          <p>{user.email}</p>
         </div>
         <ul className="menu-items">
           {menuItems.map((item) => {

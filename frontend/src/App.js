@@ -29,7 +29,7 @@ function App() {
       {!shouldHideNavigation && <Navigation active={active} setActive={setActive} />}
         <main>
             <Routes>
-              <Route exact path="/" element={token ? <Dashboard />:<LoginForm />} />
+              <Route exact path="/" element={token ? <Dashboard />:<LoginForm/>} />
               <Route exact path="/incomes" element={token?<Incomes />:<LoginForm />} />
               <Route exact path="/expenses" element={token ?<Expenses />:<LoginForm />} />
               <Route exact path="/login" element={<LoginForm />} />

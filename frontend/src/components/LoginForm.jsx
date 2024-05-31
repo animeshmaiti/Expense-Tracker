@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { useGlobalContext } from "../context/globalContext";
 import '../App.css';
 import finance from "../img/finance2.jpg";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 function LoginForm() {
-  const {login}= useGlobalContext();
-  const navigate = useNavigate();
-  // const alert = props.alert;
-  useEffect(() => {
-    navigate("/login");
-  }, []);
+  const {login,error}= useGlobalContext();
+  const navigate=useNavigate();
   const [credential, setCredential] = useState({ email: "", password: "" });
+  useEffect(() => {
+    navigate('/login');
+  }, []);
   const handleLogin = async (e) => {
     e.preventDefault();
     login(credential);
@@ -28,6 +27,9 @@ function LoginForm() {
       <form onSubmit={handleLogin} className="form-div">
         <div className="container">
           <h2>Login</h2>
+          {error && <div className="error">
+            <span className="span-err">{error}</span>
+          </div>}
           <div className="input-div">
             <label className="input-label" htmlFor="email">
               Email
@@ -58,7 +60,7 @@ function LoginForm() {
             Login
           </button>
           <p>
-            New to Expense Tracker?<Link className="sign-up" to="/register">Sign Up</Link>{" "}
+            New to Expense Tracker?<Link className="sign-up" to="/register">Sign Up</Link>
           </p>
         </div>
       </form>

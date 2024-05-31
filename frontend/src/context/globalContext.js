@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useCallback,useEffect } from "react";
+import { createContext, useState, useContext, useCallback, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,57 +8,68 @@ const BaseAuthUrl = 'http://localhost:5000/api/auth/';
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-    // const { token } = useAuth();
     const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [incomes, setIncomes] = useState([]);
     const [expenses, setExpenses] = useState([]);
+    const [user, setUser] = useState({
+        username: "",
+        email: ""
+    });
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
-          setToken(storedToken);
+            setToken(storedToken);
         }
-      }, []);
+    }, []);
 
     // login
     const login = async (credential) => {
         const authURL = `${BaseAuthUrl}login`;
-        const response = await axios.post(
-            authURL,
-            {
-                email: credential.email,
-                password: credential.password,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
+        try {
+            const response = await axios.post(
+                authURL,
+                {
+                    email: credential.email,
+                    password: credential.password,
                 },
-            }
-        );
-
-        const result = await response.data;
-        if (result.success) {
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            const result = await response.data;
             localStorage.setItem("token", result.authToken);
             setToken(result.authToken);
             window.location.href = "/";
-        } else {
-            console.log(result.message);
+        } catch (err) {
+            // console.log(err.response.data.errors);
+            setError(err.response?.data?.errors);
         }
+
+
     };
 
     //get user data
     const getUser = async () => {
         const userUrl = `${BaseAuthUrl}getuser`;
-        const response = await axios.get(userUrl, {
-            headers: {
-                "Content-Type": "application/json",
-                "auth-token": token,
-            },
-        });
-        const result = await response.data;
-        return result;
+        try {
+            const response = await axios.get(userUrl, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": token,
+                },
+            });
+            const result = await response.data;
+            setUser({ username: result.username, email: result.email });
+        }
+        catch (err) {
+            console.log(err.response.data.errors);
+            setError(err.response?.data?.errors);
+        }
     };
 
     //logout
@@ -71,24 +82,27 @@ export const GlobalProvider = ({ children }) => {
     //sign up
     const signup = async (credential) => {
         const signupUrl = `${BaseAuthUrl}createuser`;
-        const response = await axios.post(
-            signupUrl,
-            {
-                username: credential.username,
-                email: credential.email,
-                password: credential.password,
-                cPassword: credential.cPassword,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
+        try {
+            const response = await axios.post(
+                signupUrl,
+                {
+                    username: credential.username,
+                    email: credential.email,
+                    password: credential.password,
+                    cPassword: credential.cPassword,
                 },
-            }
-        );
-        const result = await response.json();
-        if (result.success) {
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            const result = await response.json();
             localStorage.setItem("token", result.authToken);
             navigate("/login");
+        } catch (err) {
+            // console.log(err.response.data.errors);
+            setError(err.response?.data?.errors);
         }
     };
 
@@ -209,6 +223,7 @@ export const GlobalProvider = ({ children }) => {
             token,
             logout,
             getUser,
+            user,
             addIncome,
             getIncomes,
             incomes,
