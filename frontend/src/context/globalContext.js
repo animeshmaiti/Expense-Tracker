@@ -97,11 +97,11 @@ export const GlobalProvider = ({ children }) => {
                     },
                 }
             );
-            const result = await response.json();
+            const result = await response.data;
             localStorage.setItem("token", result.authToken);
             navigate("/login");
         } catch (err) {
-            console.log(err.response.data.errors);
+            console.log(err);
             setError(err.response?.data?.errors);
         }
     };
