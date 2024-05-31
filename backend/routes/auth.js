@@ -17,17 +17,17 @@ router.post('/createuser', [
     body('cPassword', 'enter a valid password min length 5').isLength({ min: 5 })
 ], async (req, res) => {
     let success = false;
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({success, errors: errors.array() });
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        return res.status(400).json({success, errors: error.array() });
     }
     try {
         let user = await User.findOne({ email: req.body.email });
         if (user) {
-            return res.status(400).json({success, error: "Sorry a user with this email already exist" });
+            return res.status(400).json({success, errors: ["Sorry a user with this email already exist"] });
         }
         if(req.body.password!==req.body.cPassword){
-            return res.status(400).json({success, error: "password not matched" });
+            return res.status(400).json({success, errors: ["password not matched"] });
         }
         const salt = await bcrypt.genSalt(10);
         const secPass = await bcrypt.hash(req.body.password, salt);

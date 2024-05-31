@@ -4,7 +4,7 @@ import "../App.css";
 import finance from "../img/finance2.jpg";
 import { Link } from "react-router-dom";
 
-export const SignupForm = (props) => {
+export const SignupForm = () => {
   const { signup, error } = useGlobalContext();
   const [credential, setCredential] = useState({
     username: "",
@@ -33,7 +33,7 @@ export const SignupForm = (props) => {
               {error.map((err, index) => {
                 return (
                   <span key={index} className="span-err">
-                    {err.msg}
+                    {err.msg ? err.msg : err}
                   </span>
                 );
               })}

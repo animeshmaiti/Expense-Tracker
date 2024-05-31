@@ -101,7 +101,7 @@ export const GlobalProvider = ({ children }) => {
             localStorage.setItem("token", result.authToken);
             navigate("/login");
         } catch (err) {
-            // console.log(err.response.data.errors);
+            console.log(err.response.data.errors);
             setError(err.response?.data?.errors);
         }
     };
