@@ -1,6 +1,6 @@
-import { createContext, useState, useContext, useCallback, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const BaseUrl = 'http://localhost:5000/api/';
@@ -9,21 +9,26 @@ const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [incomes, setIncomes] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [user, setUser] = useState({
-        username: "",
-        email: ""
+        username: '',
+        email: ''
     });
     const [error, setError] = useState(null);
+    useEffect(() => {
+        setError(null);
+    }, [location.pathname]);
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
+            getUser();
         }
-    }, []);
+    }, [token]);
 
     // login
     const login = async (credential) => {
@@ -37,16 +42,16 @@ export const GlobalProvider = ({ children }) => {
                 },
                 {
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
                 }
             );
             const result = await response.data;
-            localStorage.setItem("token", result.authToken);
+            localStorage.setItem('token', result.authToken);
             setToken(result.authToken);
-            window.location.href = "/";
+            window.location.href = '/';
         } catch (err) {
-            // console.log(err.response.data.errors);
+            console.log(err.response.data.errors);
             setError(err.response?.data?.errors);
         }
 
@@ -59,24 +64,24 @@ export const GlobalProvider = ({ children }) => {
         try {
             const response = await axios.get(userUrl, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
                 },
             });
-            const result = await response.data;
+            const result = response.data;
             setUser({ username: result.username, email: result.email });
         }
         catch (err) {
-            console.log(err.response.data.errors);
+            console.log(err);
             setError(err.response?.data?.errors);
         }
     };
 
     //logout
     const logout = () => {
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
         setToken(null);
-        navigate("/login");
+        navigate('/login');
     };
 
     //sign up
@@ -93,62 +98,110 @@ export const GlobalProvider = ({ children }) => {
                 },
                 {
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
                 }
             );
             const result = await response.data;
-            localStorage.setItem("token", result.authToken);
-            navigate("/login");
+            localStorage.setItem('token', result.authToken);
+            navigate('/login');
         } catch (err) {
             console.log(err);
             setError(err.response?.data?.errors);
         }
     };
 
-    // Incomes 
-    const getIncomes = useCallback(async () => {
+    // Incomes
+    const getIncomes = async () => {
         try {
             const response = await axios.get(`${BaseUrl}get-incomes`, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
                 },
             });
             setIncomes(response.data);
         } catch (err) {
+            console.log(err);
             setError(err.response?.data?.message);
         }
-    }, []);
+    };
 
-    const addIncome = useCallback(async (income) => {
+    const addIncome = async (income) => {
         try {
             await axios.post(`${BaseUrl}add-income`, income, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
                 },
             });
-            getIncomes(); // Fetch the latest incomes after adding a new one
+            getIncomes();
         } catch (err) {
+            console.log(err);
             setError(err.response?.data?.message);
         }
-    }, [getIncomes]);
+    };
 
-    const deleteIncome = useCallback(async (id) => {
+    const deleteIncome = async (id) => {
         try {
             await axios.delete(`${BaseUrl}delete-income/${id}`, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
                 },
             });
-            getIncomes(); // Fetch the latest incomes after deleting one
+            getIncomes();
         } catch (err) {
+            console.log(err);
             setError(err.response?.data?.message);
         }
-    }, [getIncomes]);
+    };
 
+    // Expenses
+    const getExpenses = async () => {
+        try {
+            const response = await axios.get(`${BaseUrl}get-expenses`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
+                },
+            });
+            setExpenses(response.data);
+        } catch (err) {
+            console.log(err);
+            setError(err.response?.data?.message);
+        }
+    };
+
+    const addExpense = async (expense) => {
+        try {
+            await axios.post(`${BaseUrl}add-expense`, expense, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
+                },
+            });
+            getExpenses();
+        } catch (err) {
+            console.log(err);
+            setError(err.response?.data?.message);
+        }
+    };
+
+    const deleteExpense = async (id) => {
+        try {
+            await axios.delete(`${BaseUrl}delete-expense/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
+                },
+            });
+            getExpenses();
+        } catch (err) {
+            console.log(err);
+            setError(err.response?.data?.message);
+        }
+    };
     const totalIncome = () => {
         let totalIncome = 0;
         incomes.forEach(income => {
@@ -156,50 +209,6 @@ export const GlobalProvider = ({ children }) => {
         });
         return totalIncome;
     }
-
-    // Expense
-    const getExpenses = useCallback(async () => {
-        try {
-            const response = await axios.get(`${BaseUrl}get-expenses`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
-                },
-            });
-            setExpenses(response.data);
-        } catch (err) {
-            setError(err.response?.data?.message);
-        }
-    }, []);
-
-    const addExpense = useCallback(async (expense) => {
-        try {
-            await axios.post(`${BaseUrl}add-expense`, expense, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
-                },
-            });
-            getExpenses(); // Fetch the latest incomes after adding a new one
-        } catch (err) {
-            setError(err.response?.data?.message);
-        }
-    }, [getExpenses]);
-
-    const deleteExpense = useCallback(async (id) => {
-        try {
-            await axios.delete(`${BaseUrl}delete-expense/${id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": token,
-                },
-            });
-            getExpenses(); // Fetch the latest incomes after deleting one
-        } catch (err) {
-            setError(err.response?.data?.message);
-        }
-    }, [getExpenses]);
-
     const totalExpense = () => {
         let totalExpense = 0;
         expenses.forEach(expense => {
@@ -218,24 +227,10 @@ export const GlobalProvider = ({ children }) => {
 
     return (
         <GlobalContext.Provider value={{
-            login,
-            signup,
-            token,
-            logout,
-            getUser,
-            user,
-            addIncome,
-            getIncomes,
-            incomes,
-            deleteIncome,
-            totalIncome,
-            addExpense,
-            getExpenses,
-            expenses,
-            deleteExpense,
-            totalExpense,
-            transactionHistory,
-            error
+            login,signup,token,logout,getUser,user,
+            addIncome,getIncomes,incomes,deleteIncome,totalIncome,
+            addExpense,getExpenses,expenses,deleteExpense,totalExpense,
+            transactionHistory,error
         }}>
             {children}
         </GlobalContext.Provider>

@@ -1,167 +1,124 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { useGlobalContext } from "../context/globalContext";
-import Button from "./Button";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { plus } from "../utils/icons";
+import { useState } from 'react';
+import { useGlobalContext } from '../context/globalContext';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { plus } from '../utils/icons';
 
-export const ExpenseForm = () => {
-  const { addExpense, error } = useGlobalContext();
-
-  const [input, setInput] = useState({
-    title: "",
-    amount: "",
-    category: "",
-    description: "",
-    date: "",
-  });
-
-  const { title, amount, category, description, date } = input;
-
-  const handleChange = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addExpense(input);
-    setInput({
-      title: "",
-      amount: "",
-      date: "",
-      category: "",
-      description: "",
+const ExpenseForm = () => {
+    const { addExpense, error } = useGlobalContext();
+    const categories = [
+        'Education',
+        'Groceries',
+        'Games',
+        'Health',
+        'Subscriptions',
+        'Takeaways',
+        'Clothing',
+        'Traveling',
+        'Other',
+    ];
+    const [input, setInput] = useState({
+        title: '',
+        amount: '',
+        category: '',
+        description: '',
+        date: '',
     });
-  };
 
-  return (
-    <ExpenseFormStyled onSubmit={handleSubmit}>
-      {error && <p className="error">{error}</p>}
-      <div className="input-control">
-        <input
-          required
-          type="text"
-          value={title}
-          name="title"
-          placeholder="Expense Title"
-          onChange={handleChange}
-        />
-      </div>
-      <div className="input-control">
-        <input
-          required
-          type="text"
-          value={amount}
-          name="amount"
-          placeholder="Expensed Amount"
-          onChange={handleChange}
-        />
-      </div>
-      <div className="select-date">
-        <div className="input-control">
-          <select
-            required
-            value={category}
-            name="category"
-            id="category"
-            onChange={handleChange}
-          >
-            <option value="" disabled>
-              Select Option
-            </option>
-            <option value="education">Education</option>
-            <option value="groceries">Groceries</option>
-            <option value="games">Games</option>
-            <option value="health">Health</option>
-            <option value="subscriptions">Subscriptions</option>
-            <option value="takeaways">Takeaways</option>
-            <option value="clothing">Clothing</option>
-            <option value="traveling">Traveling</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div className="input-control">
-          <DatePicker
-            required
-            id="date"
-            selected={date}
-            placeholderText="Expense Date"
-            dateFormat={"dd/MM/yyyy"}
-            onChange={(date) => setInput({ ...input, date })}
-          />
-        </div>
-      </div>
-      <div className="input-control">
-        <input
-          type="text"
-          value={description}
-          name="description"
-          placeholder="Expense Description"
-          onChange={handleChange}
-        />
-      </div>
-      <div className="submit-btn">
-        <Button
-          name={"Add Expense"}
-          icon={plus}
-          bPad={".8rem 1.6rem"}
-          bRad={"30px"}
-          bg={"var(--color-accent)"}
-          color={"#fff"}
-        />
-      </div>
-    </ExpenseFormStyled>
-  );
-};
+    const { title, amount, category, description, date } = input;
 
-const ExpenseFormStyled = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  input,
-  textarea,
-  select {
-    font-family: inherit;
-    font-size: inherit;
-    outline: none;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    border: 2px solid #fff;
-    background: transparent;
-    resize: none;
-    box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-    color: rgba(34, 34, 96, 0.9);
-    &::placeholder {
-      color: rgba(34, 34, 96, 0.4);
-    }
-  }
-  .input-control {
-    input {
-      width: 100%;
-    }
-  }
+    const handleChange = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
+    };
 
-  .select-date {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    select {
-      color: rgba(34, 34, 96, 0.4);
-      &:focus,
-      &:active {
-        color: rgba(34, 34, 96, 1);
-      }
-    }
-  }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        addExpense(input);
+        setInput({
+            title: '',
+            amount: '',
+            date: '',
+            category: '',
+            description: '',
+        });
+    };
 
-  .submit-btn {
-    button {
-      box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-      &:hover {
-        background: var(--color-green) !important;
-      }
-    }
-  }
-`;
+    return (
+        <form onSubmit={handleSubmit} className='flex flex-col gap-8 w-full'>
+            {error && <p className='text-red-500 animate-pulse'>{error}</p>}
+
+            <input
+                required
+                type='text'
+                name='title'
+                value={title}
+                onChange={handleChange}
+                placeholder='Expense Title'
+                className='w-full px-4 py-2 rounded border-2 border-white bg-transparent text-[#222260e6] shadow-md placeholder:text-[#22226066] outline-none'
+            />
+
+            <input
+                required
+                type='text'
+                name='amount'
+                value={amount}
+                onChange={handleChange}
+                placeholder='Expensed Amount'
+                className='w-full px-4 py-2 rounded border-2 border-white bg-transparent text-[#222260e6] shadow-md placeholder:text-[#22226066] outline-none'
+            />
+
+            <div className='flex justify-between gap-4'>
+
+                    <select
+                        required
+                        name='category'
+                        value={category}
+                        onChange={handleChange}
+                        className='w-1/2 flex-1 px-4 py-2 rounded border-2 border-white bg-transparent text-[#22226066] shadow-md outline-none focus:text-[#222260]'
+                    >
+                        <option value='' disabled>Select Option</option>
+                        {
+                            categories.map((cat, index) => (
+                                <option key={index} value={cat.toLowerCase().replace(/\s+/g, '')}>
+                                    {cat}
+                                </option>
+                            ))
+                        }
+                    </select>
+                <div className='w-1/2'>
+                    <DatePicker
+                        required
+                        selected={date}
+                        onChange={(date) => setInput({ ...input, date })}
+                        placeholderText='Expense Date'
+                        dateFormat='dd/MM/yyyy'
+                        className='w-full h-full flex-1 px-4 py-2 rounded border-2 border-white bg-transparent text-[#222260e6] shadow-md placeholder:text-[#22226066] outline-none'
+                    />
+                </div>
+            </div>
+
+            <div>
+                <input
+                    type='text'
+                    name='description'
+                    value={description}
+                    onChange={handleChange}
+                    placeholder='Expense Description'
+                    className='w-full p-3 rounded border-2 border-white bg-transparent text-[#222260e6] shadow-md placeholder:text-[#22226066] outline-none'
+                />
+            </div>
+
+            <div>
+                <button
+                    type='submit'
+                    className='flex items-center gap-2 px-4 py-2 rounded-full text-white bg-accent hover:bg-pink-600 transition duration-300'
+                >
+                    {plus}
+                    Add Expense
+                </button>
+            </div>
+        </form>
+    );
+}
+
+export default ExpenseForm
