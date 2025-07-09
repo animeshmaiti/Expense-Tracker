@@ -44,18 +44,18 @@ router.post('/createuser', [
         // const authToken = jwt.sign({ data, exp: expire_time }, JWT_SECRET);
         const authToken = jwt.sign(data, JWT_SECRET);
         success=true;
-        res.json({success, authToken });
+        return res.status(200).json({success, authToken });
     } catch (error) {
         success=false
         console.error(error.message);
-        res.status(500).send("internal server error");
+        res.status(500).json({success,errors:["internal server error"]});
     }
 });
 
 // ============= login user /api/auth/login (Login not required) ===============
 router.post('/login', [
     body('email', 'enter a valid email').isEmail(),
-    body('password', 'password cannot be blank').exists(),
+    body('password', 'password cannot be blank').notEmpty(),
 ], async (req, res) => {
     let success = false;
     // const expire_time = Math.floor(Date.now() / 1000) + 60;
@@ -68,12 +68,12 @@ router.post('/login', [
         let user = await User.findOne({ email });
         if (!user) {
             success = false;
-            return res.status(400).json({ success, errors: "pls login with correct credentials" });
+            return res.status(400).json({ success, errors: ["pls login with correct credentials"] });
         }
         const compPass = await bcrypt.compare(password, user.password);
         if (!compPass) {
             success = false;
-            return res.status(400).json({ success, errors: "pls login with correct credentials" });
+            return res.status(400).json({ success, errors: ["pls login with correct credentials"] });
         }
         const data = {
             user: {
@@ -83,10 +83,10 @@ router.post('/login', [
         // const authToken = jwt.sign({ data, exp: expire_time }, JWT_SECRET)
         const authToken = jwt.sign(data, JWT_SECRET)
         success=true
-        res.json({success,authToken });
+        return res.status(200).json({success,authToken });
     } catch (error) {
         console.log(error.message);
-        res.status(500).send("internal server error");
+        return res.status(500).json({success,errors:["internal server error"]});
     }
 });
 
@@ -95,10 +95,10 @@ router.get('/getuser', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await User.findById(userId).select("-password");
-        res.send(user);
+        return res.status(200).json(user);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("internal server error");
+        return res.status(500).send("internal server error");
     }
 });
 
